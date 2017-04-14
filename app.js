@@ -4,6 +4,6 @@ var api = require('./Routes/Users')
 var app = express()
 app.use('/v1', api)
 
-app.listen(3000, () => {
-    console.log("Connected to PORT : 3000")
+app.listen(3001, () => {
+    console.log("Connected to PORT : 3001")
 })
