@@ -17,6 +17,6 @@ app.use(bodyParser.json())
 
 app.use('/v1/user', api)
 
-app.listen(3000, () => {
+app.listen(3001, () => {
     console.log("Connected to PORT : 3001")
 })
