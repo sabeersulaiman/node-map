@@ -33,6 +33,10 @@ var EventSchema = new mongoose.Schema({
             type : [Number],
             index : '2d'
         },
+        user : {
+            type : String,
+            required : true
+        },
         // latitude: {
         //     type : double,
         //     required : true

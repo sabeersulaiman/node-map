@@ -13,6 +13,7 @@ router.post('/', (req, res, next) => {
     event.des = req.body.des
     event.place_name = req.body.place_name
     event.geo = [req.body.latitude, req.body.longitude]
+    event.user = req.body.user
 
     event.save((err) => {
         console.log(err)
