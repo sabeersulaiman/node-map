@@ -18,6 +18,8 @@ router.get('/', (req, res, next) => {
 router.post('/', (req, res, next) => {
     var user = new User(req.body)
 
+    console.log(req.body)
+
     var email = req.body.email
     var name = req.body.name
 
@@ -36,6 +38,7 @@ router.post('/', (req, res, next) => {
         user.name = name
 
         user.save((err) => {
+            console.log(err)
             if(err) res.json(false)
             else{
                 User.findOne({email : email}, (err, result) => {
