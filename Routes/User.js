@@ -16,8 +16,6 @@ router.get('/', (req, res, next) => {
 })
 
 router.post('/', (req, res, next) => {
-    var user = new User()
-
     console.log(req.body)
 
     var email = req.body.email
@@ -34,6 +32,7 @@ router.post('/', (req, res, next) => {
     })
 
     if(!found) {
+        var user = new User()
         user.email = email
         user.name = name
 
