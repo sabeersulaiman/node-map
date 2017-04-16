@@ -13,6 +13,14 @@ db.once('open', () => {
 
 var app = express()
 
+
+function defaultContentTypeMiddleware (req, res, next) {
+  req.headers['content-type'] = req.headers['content-type'] || 'application/json';
+  next();
+}
+
+app.use('/', defaultContentTypeMiddleware)
+
 app.use(bodyParser.json())
 
 app.use('/v1/user', api)

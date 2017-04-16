@@ -8,6 +8,11 @@ router.use('/', (req, res, next) => {
 })
 
 router.get('/', (req, res, next) => {
+    var email = req.query.email
+    User.findOne({email : email}, (err, result) => {
+        if(err) res.json(false)
+        else res.json(result)
+    })
 })
 
 router.post('/', (req, res, next) => {
