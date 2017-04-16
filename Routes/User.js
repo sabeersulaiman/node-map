@@ -16,7 +16,7 @@ router.get('/', (req, res, next) => {
 })
 
 router.post('/', (req, res, next) => {
-    var user = new User(req.body)
+    var user = new User()
 
     console.log(req.body)
 
