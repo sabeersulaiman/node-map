@@ -1,7 +1,10 @@
 var express = require('express')
-var api = require('./Routes/User')
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose')
+
+
+var user = require('./Routes/User')
+var events = require('./Routes/Events')
 
 mongoose.connect("mongodb://localhost:27017/map"); //local
 
@@ -23,7 +26,8 @@ app.use('/', defaultContentTypeMiddleware)
 
 app.use(bodyParser.json())
 
-app.use('/v1/user', api)
+app.use('/v1/user', user)
+app.use('/v1/events', events)
 
 app.listen(3001, () => {
     console.log("Connected to PORT : 3001")
