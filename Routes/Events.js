@@ -14,7 +14,7 @@ router.post('/', (req, res, next) => {
     event.place_name = req.body.place_name
     event.geo = [req.body.longitude, req.body.latitude]
 
-    console.log(geo)
+    console.log(event.geo)
 
     event.user = req.body.user
 
