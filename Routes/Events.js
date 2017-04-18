@@ -63,6 +63,8 @@ router.get('/locate', (req, res, next) => {
        var set = results.map((event) => {
            event.latitude = event.geo[1]
            event.longitude = event.geo[0]
+
+           return event
        })
 
        res.json(set)
