@@ -55,10 +55,17 @@ router.get('/locate', (req, res, next) => {
             $maxDistance: 50/637
         }
     }, function(err, results, stats) {
-       console.log(err)
-       console.log(results);
+       if(err) {
+           res.json([]);
+           return;
+       }
 
-       res.json(results)
+       var set = results.map((event) => {
+           event.latitude = event.geo[1]
+           event.longitude = event.geo[0]
+       })
+
+       res.json(set)
     });
 })
 
