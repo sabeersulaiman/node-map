@@ -52,7 +52,7 @@ router.get('/locate', (req, res, next) => {
     Event.find({
         geo:{
             $near: geo,
-            $maxDistance: 28/6371
+            $maxDistance: 50/63710
         }
     }, function(err, results, stats) {
        console.log(err)
