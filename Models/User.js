@@ -3,19 +3,18 @@
 var mongoose = require('mongoose');
 
 var UserSchema = new mongoose.Schema({
-        name: {
+        name: String,
+        mobile: {
             type : String,
             required : true
         },
-        email: {
-            type : String,
-            required : true
-        },
-        relation : mongoose.Schema.Types.Mixed,
+        bmi: String,
+        diabetes : String,
+        veg: String,
         createdat: Date,
         modifiedat: Date
     },
-    {collection : 'userCollection'}
+    {collection : 'users'}
 );
 
 module.exports = mongoose.model('users', UserSchema);

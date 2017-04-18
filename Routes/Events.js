@@ -81,4 +81,6 @@ router.get('/locate', (req, res, next) => {
     });
 })
 
+//Unable to invoke no-args constructor for interface java.lang.CharSequence. Register an InstanceCreator with Gson for this type may fix this problem.
+
 module.exports = router;

@@ -6,7 +6,7 @@ var mongoose = require('mongoose')
 var user = require('./Routes/User')
 var events = require('./Routes/Events')
 
-mongoose.connect("mongodb://localhost:27017/map"); //local
+mongoose.connect("mongodb://localhost:27017/deit"); //local
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'))

@@ -3,13 +3,13 @@ var router = express.Router()
 var User = require('../Models/User')
 
 router.use('/', (req, res, next) => {
-    console.log("Hello")
+    console.log("In users....")
     next()
 })
 
-router.get('/', (req, res, next) => {
-    var email = req.query.email
-    User.findOne({email : email}, (err, result) => {
+router.get('/:mobile', (req, res, next) => {
+    var email = req.params.mobile
+    User.findOne({mobile : mobile}, (err, result) => {
         if(err) res.json(false)
         else res.json(result)
     })
@@ -18,12 +18,15 @@ router.get('/', (req, res, next) => {
 router.post('/', (req, res, next) => {
     console.log(req.body)
 
-    var email = req.body.email
     var name = req.body.name
+    var mobile = req.body.mobile
+    var bmi = req.body.bmi
+    var diabetes = req.body.diabetes
+    var veg = req.body.veg
 
     var found = false
 
-    User.findOne({email : email}, (err, result) => {
+    User.findOne({mobile : mobile}, (err, result) => {
         if(result === null) found = false
         else {
             res.json(result).end()
@@ -33,14 +36,18 @@ router.post('/', (req, res, next) => {
 
     if(!found) {
         var user = new User()
-        user.email = email
+        
         user.name = name
+        user.mobile = mobile
+        user.bmi = bmi
+        user.diabetes = diabetes
+        user.veg = veg
 
         user.save((err) => {
             console.log(err)
             if(err) res.json(false)
             else{
-                User.findOne({email : email}, (err, result) => {
+                User.findOne({mobile : mobile}, (err, result) => {
                     if(result === null) found = true
                     else {
                         res.json(result).end()

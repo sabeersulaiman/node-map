@@ -1,7 +1,7 @@
 {
-  "name": "map",
+  "name": "dietician",
   "version": "0.0.1",
-  "description": "Map based event publishing and finding",
+  "description": "Dietician app backend service",
   "main": "app.js",
   "scripts": {
     "test": "node app.js"
@@ -9,8 +9,8 @@
   "author": "ss",
   "license": "MIT",
   "dependencies": {
-    "body-parser": "^1.17.1",
     "express": "^4.15.2",
-    "mongoose": "^4.9.4"
+    "mithril": "^1.1.1",
+    "mongoose": "^4.9.5"
   }
 }
