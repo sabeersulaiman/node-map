@@ -13,6 +13,9 @@ router.post('/', (req, res, next) => {
     event.des = req.body.des
     event.place_name = req.body.place_name
     event.geo = [req.body.longitude, req.body.latitude]
+
+    console.log(geo)
+
     event.user = req.body.user
 
     event.save((err) => {
@@ -54,6 +57,8 @@ router.get('/locate', (req, res, next) => {
     }, function(err, results, stats) {
        console.log(err)
        console.log(results);
+
+       res.json(results)
     });
 })
 
