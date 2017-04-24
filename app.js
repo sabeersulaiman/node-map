@@ -15,6 +15,7 @@ db.once('open', () => {
 })
 
 var app = express()
+app.use(express.static('src'))
 
 
 function defaultContentTypeMiddleware (req, res, next) {
@@ -27,7 +28,6 @@ app.use('/', defaultContentTypeMiddleware)
 app.use(bodyParser.json())
 
 app.use('/v1/user', user)
-app.use('/v1/events', events)
 
 app.listen(3001, () => {
     console.log("Connected to PORT : 3001")

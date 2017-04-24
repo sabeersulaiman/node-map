@@ -4,11 +4,14 @@
   "description": "Dietician app backend service",
   "main": "app.js",
   "scripts": {
-    "test": "node app.js"
+    "test": "npm run all",
+    "build-mithril": "webpack src/index.js src/bin/app.js",
+    "start": "npm run build-mithril && npm test",
+    "all": "webpack src/index.js src/bin/app.js && concurrently \"webpack src/index.js src/bin/app.js --watch\" \"node app.js\" "
   },
   "author": "ss",
-  "license": "MIT",
   "dependencies": {
+    "body-parser": "^1.17.1",
     "express": "^4.15.2",
     "mithril": "^1.1.1",
     "mongoose": "^4.9.5"
