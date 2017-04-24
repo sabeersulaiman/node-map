@@ -1,56 +1,164 @@
 var Stream = require('mithril/stream')
+var m = require('mithril')
+var config = require("../../config")
 
 var DietModel = {
     diet : null,
     newDiet : () => {
         var d = {
-            plan : "",
-            monday : [],
-            tuesday : [],
-            wednesday : [],
-            thursday : [],
-            friday : [],
-            saturday : [],
-            name : [],
+            plan : Stream(''),
+            monday : {
+                early : [],
+                break : [],
+                mid : [],
+                lunch : [],
+                even : [],
+                din : []
+            },
+            tuesday : {
+                early : [],
+                break : [],
+                mid : [],
+                lunch : [],
+                even : [],
+                din : []
+            },
+            wednesday : {
+                early : [],
+                break : [],
+                mid : [],
+                lunch : [],
+                even : [],
+                din : []
+            },
+            thursday : {
+                early : [],
+                break : [],
+                mid : [],
+                lunch : [],
+                even : [],
+                din : []
+            },
+            friday : {
+                early : [],
+                break : [],
+                mid : [],
+                lunch : [],
+                even : [],
+                din : []
+            },
+            saturday : {
+                early : [],
+                break : [],
+                mid : [],
+                lunch : [],
+                even : [],
+                din : []
+            },
+            sunday : {
+                early : [],
+                break : [],
+                mid : [],
+                lunch : [],
+                even : [],
+                din : []
+            },
             exercise : [],
             items : [],
             dos : [],
-            dont : []
+            dont : [],
+            veg : Stream(false),
+            dia : Stream(false)
         }
 
         DietModel.diet = d
     },
-    addFoodToWeek : (day, food) => {
+    addFoodToWeek : (day, time) => {
+        var food = DietModel.newFood()
         if(DietModel.diet) {
+            var daySelect;
             switch(day) {
-                case "mon" : DietModel.diet.monday.push(food)
+                case "mon" : daySelect = DietModel.diet.monday;
                              break
                             
-                case "tue" : DietModel.diet.tueday.push(food)
+                case "tue" : daySelect = DietModel.diet.tuesday
                              break
                             
-                case "wed" : DietModel.diet.wednesday.push(food)
+                case "wed" : daySelect = DietModel.diet.wednesday
                              break
                             
-                case "thu" : DietModel.diet.thursday.push(food)
+                case "thu" : daySelect = DietModel.diet.thursday
                              break
                             
-                case "fri" : DietModel.diet.friday.push(food)
+                case "fri" : daySelect = DietModel.diet.friday
                              break
                             
-                case "sat" : DietModel.diet.saturday.push(food)
+                case "sat" : daySelect = DietModel.diet.saturday
                              break
                             
-                case "sun" : DietModel.diet.sunday.push(food)
+                case "sun" : daySelect = DietModel.diet.sunday
                              break
-                default    : break
+                default    : daySelect = null
+                             break
             }
+
+            if(daySelect)
+                switch(time) {
+                    case "early" : 
+                                daySelect.early.push(food)
+                                break
+                                
+                    case "break" : 
+                                daySelect.break.push(food)
+                                break
+                                
+                    case "lunch" : 
+                                daySelect.lunch.push(food)
+                                break
+                                
+                    case "even" : 
+                                daySelect.even.push(food)
+                                break
+                                
+                    case "mid" : 
+                                daySelect.mid.push(food)
+                                break
+
+                    case "din" : 
+                                daySelect.din.push(food)
+                                break
+                    default    : 
+                                daySelect = null
+                                break
+                }
+        }
+    },
+    newFood : () => {
+        return {
+            item : Stream(''),
+            quantity : Stream(''),
+            protien : Stream(''),
+            calories : Stream('')
         }
     },
     addExercise : (str) => {
         if(DietModel.diet) {
             DietModel.diet.exercise.push(Stream(''))
         }
+    },
+    save : () => {
+        m.request({
+            method : "POST",
+            data : DietModel.diet,
+            url : config.diets
+        }).then(
+            (response) => {
+                console.log(response)
+            },
+            (error) => {
+                console.log(error)
+            }
+        )
     }
 }
 

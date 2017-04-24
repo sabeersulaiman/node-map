@@ -1,3 +1,7 @@
+body {
+    overflow-x: hidden;
+}
+
 #logo {
     padding: 5px;
     height: 60px;
@@ -75,4 +79,43 @@
     font-size: 15px;
     border-radius: 5px;
     padding: 5px;
+    margin-bottom: 5px; 
+}
+
+button.new {
+    background: lightseagreen;
+    border: none;
+    color: #fff;
+    border-radius: 5px;
+    height: 35px;
+    padding: 0 50px;
+}
+
+.planName {
+    width: 100%;
+    border: 3px solid #ccc;
+    font-size: 20px;
+    border-radius: 5px;
+    padding: 10px;
+    margin : 10px;
+}
+
+.checker{
+    width: 200px;
+    margin: 17px;
+    border-radius: 5px;
+    background: cadetblue;
+    color: #fff;
+    padding: 12px;
+    font-size: 20px;
+}
+
+.centerDiv {
+    width : 50%;
+    margin: 0 auto;
+}
+
+.centerDiv h1{
+    text-align: center;
+    color: darkslategray;
 }
