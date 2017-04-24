@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 7);
+/******/ 	return __webpack_require__(__webpack_require__.s = 9);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1297,7 +1297,7 @@ m.vnode = Vnode
 if (true) module["exports"] = m
 else window.m = m
 }());
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10).setImmediate, __webpack_require__(2)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12).setImmediate, __webpack_require__(4)))
 
 /***/ }),
 /* 1 */
@@ -1306,11 +1306,229 @@ else window.m = m
 "use strict";
 
 
-module.exports = __webpack_require__(5)
+module.exports = __webpack_require__(7)
 
 
 /***/ }),
 /* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var m = __webpack_require__(0);
+
+var Toast = {
+    toastVal : '',
+    showToast : function (message) {
+        var sbar = document.getElementById('snackbar');
+        Toast.toastVal = message;
+        sbar.className = "show";
+        setTimeout(function(){ sbar.className = sbar.className.replace("show", ""); }, 3000);
+    }
+};
+
+module.exports = Toast;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Stream = __webpack_require__(1)
+var m = __webpack_require__(0)
+var config = __webpack_require__(6)
+var Toast = __webpack_require__(2)
+
+var DietModel = {
+    diet : null,
+    loading : true,
+    newDiet : () => {
+        var d = {
+            plan : Stream(''),
+            monday : {
+                early : [],
+                break : [],
+                lunch : [],
+                even : [],
+                din : []
+            },
+            tuesday : {
+                early : [],
+                break : [],
+                lunch : [],
+                even : [],
+                din : []
+            },
+            wednesday : {
+                early : [],
+                break : [],
+                lunch : [],
+                even : [],
+                din : []
+            },
+            thursday : {
+                early : [],
+                break : [],
+                lunch : [],
+                even : [],
+                din : []
+            },
+            friday : {
+                early : [],
+                break : [],
+                lunch : [],
+                even : [],
+                din : []
+            },
+            saturday : {
+                early : [],
+                break : [],
+                lunch : [],
+                even : [],
+                din : []
+            },
+            sunday : {
+                early : [],
+                break : [],
+                lunch : [],
+                even : [],
+                din : []
+            },
+            exercise : [],
+            items : [],
+            dos : [],
+            dont : [],
+            veg : Stream(false),
+            dia : Stream(false)
+        }
+
+        DietModel.diet = d
+        DietModel.loading = false
+    },
+    addFoodToWeek : (day, time) => {
+        var food = DietModel.newFood()
+        if(DietModel.diet) {
+            var daySelect;
+            switch(day) {
+                case "mon" : daySelect = DietModel.diet.monday;
+                             break
+                            
+                case "tue" : daySelect = DietModel.diet.tuesday
+                             break
+                            
+                case "wed" : daySelect = DietModel.diet.wednesday
+                             break
+                            
+                case "thu" : daySelect = DietModel.diet.thursday
+                             break
+                            
+                case "fri" : daySelect = DietModel.diet.friday
+                             break
+                            
+                case "sat" : daySelect = DietModel.diet.saturday
+                             break
+                            
+                case "sun" : daySelect = DietModel.diet.sunday
+                             break
+                default    : daySelect = null
+                             break
+            }
+
+            if(daySelect)
+                switch(time) {
+                    case "early" : 
+                                daySelect.early.push(food)
+                                break
+                                
+                    case "break" : 
+                                daySelect.break.push(food)
+                                break
+                                
+                    case "lunch" : 
+                                daySelect.lunch.push(food)
+                                break
+                                
+                    case "even" : 
+                                daySelect.even.push(food)
+                                break
+                                
+                    case "mid" : 
+                                daySelect.mid.push(food)
+                                break
+
+                    case "din" : 
+                                daySelect.din.push(food)
+                                break
+                    default    : 
+                                daySelect = null
+                                break
+                }
+        }
+    },
+    newFood : () => {
+        return {
+            item : Stream(''),
+            quantity : Stream(''),
+            protien : Stream(''),
+            calories : Stream('')
+        }
+    },
+    addExercise : (str) => {
+        if(DietModel.diet) {
+            DietModel.diet.exercise.push(Stream(''))
+        }
+    },
+    save : () => {
+        DietModel.loading = true
+        m.request({
+            method : "POST",
+            data : DietModel.diet,
+            url : config.diets
+        }).then(
+            (response) => {
+                if(response === null) {
+                    Toast.showToast("Unable to save, please try again.")
+                }
+                else {
+                    console.log(response)
+                    Toast.showToast("Diet saved successfully.")
+                }
+
+                DietModel.loading = false
+            },
+            (error) => {
+                    Toast.showToast("Network Error, please try again.")
+                    DietModel.loading = false
+            }
+        )
+    },
+    loadDiet : (id) => {
+        DietModel.loading = true
+
+        m.request({
+            method : "GET",
+            url : config.diets + id
+        }).then(
+            (response) => {
+                if(response === null) {
+                    Toast.showToast("Failed To load the diet, please reload.")
+                }
+                else {
+                    DietModel.diet = response
+                    console.log(response)
+                    Toast.showToast("Loaded the diet")
+                }
+                DietModel.loading = false
+            },
+            (error) => {
+                Toast.showToast("Failed To load the diet, please reload.")
+                DietModel.loading = false
+            }
+        )
+    }
+}
+
+module.exports = DietModel
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports) {
 
 var g;
@@ -1337,19 +1555,21 @@ module.exports = g;
 
 
 /***/ }),
-/* 3 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var m = __webpack_require__(0)
 var Stream = __webpack_require__(1)
-var DietModel = __webpack_require__(6)
+var DietModel = __webpack_require__(3)
+var DietComponent = __webpack_require__(8)
+var Toast = __webpack_require__(2)
 
 var NavComponent = {
     oninit : (vnode) => {
-        DietModel.newDiet()
     },
     view : (vnode) => {
         return [
+            m('#snackbar', Toast.toastVal),
             m(".container-fluid", [
                 m(".row", [
                     m(".col-md-12[id='logo']", [m("img.img-responsive[src='./images/login_logo.png']")])
@@ -1362,134 +1582,17 @@ var NavComponent = {
                             m("li", [m("a[href='#diets']", "Diets")])
                         ])
                     ]),
-                    m(".col-sm-10[id='content']", [
-                        m(".row", [
-                            m(".col-md-12", [
-                                m(".centerDiv", m("h1", "Add new Diet")),
-                                m("button.save", {
-                                    onclick : DietModel.save
-                                }, "Save Now"),
-                                m("input.planName[type='text'][placeholder='Diet Name']", {
-                                    oninput : m.withAttr('value', DietModel.diet.plan),
-                                    value : DietModel.diet.plan()
-                                }),
-                                m("label.checker",
-                                    m("input[type='checkbox']", {
-                                        checked : DietModel.diet.veg(),
-                                        onclick : m.withAttr('checked', DietModel.diet.veg)
-                                    }), "Vegetarian"
-                                ),
-                                m("label.checker",
-                                    m("input[type='checkbox']", {
-                                        checked : DietModel.diet.dia(),
-                                        onclick : m.withAttr('checked', DietModel.diet.dia)
-                                    }), "For Diabetic"
-                                ),
-                                m(".tabs", [
-                                    m("ul.nav.nav-pills", [
-                                        m("li.active", [m("a[data-toggle='tab'][href='#mon']", "Monday")]),
-                                        m("li[class='']", [m("a[data-toggle='tab'][href='#tue']", "Tuesday")]),
-                                        m("li[class='']", [m("a[data-toggle='tab'][href='#wed']", "Wednesday")]),
-                                        m("li[class='']", [m("a[data-toggle='tab'][href='#thu']", "Thursday")]),
-                                        m("li[class='']", [m("a[data-toggle='tab'][href='#fri']", "Friday")]),
-                                        m("li[class='']", [m("a[data-toggle='tab'][href='#sat']", "Saturday")]),
-                                        m("li[class='']", [m("a[data-toggle='tab'][href='#sun']", "Sunday")])
-                                    ]),
-                                    m(".tab-content", [
-                                        NavComponent.tabWeekDay("mon", DietModel.diet.monday, true),
-                                        NavComponent.tabWeekDay("tue", DietModel.diet.tuesday),
-                                        NavComponent.tabWeekDay("wed", DietModel.diet.wednesday),
-                                        NavComponent.tabWeekDay("thu", DietModel.diet.thursday),
-                                        NavComponent.tabWeekDay("fri", DietModel.diet.friday),
-                                        NavComponent.tabWeekDay("sat", DietModel.diet.saturday),
-                                        NavComponent.tabWeekDay("sun", DietModel.diet.sunday)
-                                    ])
-                                ])
-                            ])
-                        ])
-                    ])
+                    m(DietComponent)
                 ])
             ])
         ]
-    },
-    tabWeekDay : (tabId, model, active) => {
-        if (active) classes = ".tab-pane.fade.active.in"
-        else classes = ".tab-pane.fade"
-
-        return [m("" + classes,{id : tabId}, [
-                    m(".tabs", [
-                        m("ul.nav.nav-pills", [
-                            m("li.active", [m("a[data-toggle='tab'][href='#early"+ tabId +"']", "Early Morning")]),
-                            m("li[class='']", [m("a[data-toggle='tab'][href='#break"+ tabId +"']", "Breakfast")]),
-                            m("li[class='']", [m("a[data-toggle='tab'][href='#mid"+ tabId +"']", "Mid Morning")]),
-                            m("li[class='']", [m("a[data-toggle='tab'][href='#lunch"+ tabId +"']", "Lunch")]),
-                            m("li[class='']", [m("a[data-toggle='tab'][href='#even"+ tabId +"']", "Evening")]),
-                            m("li[class='']", [m("a[data-toggle='tab'][href='#din"+ tabId +"']", "Dinner")])
-                        ]),
-                        m(".tab-content", [
-                            NavComponent.tabTime("early" + tabId, model.early, true),
-                            NavComponent.tabTime("break" + tabId, model.break),
-                            NavComponent.tabTime("mid" + tabId, model.mid),
-                            NavComponent.tabTime("lunch" + tabId, model.lunch),
-                            NavComponent.tabTime("even" + tabId, model.even),
-                            NavComponent.tabTime("din" + tabId, model.din)
-                        ])
-                    ])
-                ])
-            ]
-    },
-    tabTime : (tabId, model, active) => {
-        if(active) classes = ".tab-pane.fade.active.in"
-        else classes = ".tab-pane.fade"
-        return              m("" + classes, {id: tabId}, [
-                                m("button.new", {onclick : NavComponent.pusher(model)}, "+ Add new"),
-                                m(".food-head", [
-                                    m(".col-xs-3", "Menu Item"),
-                                    m(".col-xs-3", "Quantity"),
-                                    m(".col-xs-3", "Calories"),
-                                    m(".col-xs-3", "Protien")
-                                ]),
-                                model.map((food) => {
-                                    return m(".food-in", [
-                                        m(".col-xs-3", [
-                                            m("input[placeholder='Menu Item'][type='text']", {
-                                                value : food.item(),
-                                                oninput : m.withAttr('value', food.item)
-                                            })
-                                        ]),
-                                        m(".col-xs-3", [
-                                            m("input[placeholder='Quantity'][type='text']", {
-                                                value : food.quantity(),
-                                                oninput : m.withAttr('value', food.quantity)
-                                            })
-                                        ]),
-                                        m(".col-xs-3", [
-                                            m("input[placeholder='Calories'][type='text']", {
-                                                value : food.calories(),
-                                                oninput : m.withAttr('value', food.calories)
-                                            })
-                                        ]),
-                                        m(".col-xs-3", [
-                                            m("input[placeholder='Protien'][type='text']", {
-                                                value : food.protien(),
-                                                oninput : m.withAttr('value', food.protien)
-                                            })
-                                        ])
-                                    ])
-                                })
-                            ])
-    },
-    pusher : (model) => {
-        return () => {
-            model.push(DietModel.newFood())
-        }
     }
 }
 
 module.exports = NavComponent
 
 /***/ }),
-/* 4 */
+/* 6 */
 /***/ (function(module, exports) {
 
 var APIBaseUrl = "http://localhost:3001/v1/"
@@ -1500,7 +1603,7 @@ var url = {
 module.exports = url
 
 /***/ }),
-/* 5 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1665,184 +1768,155 @@ else window.m = {stream : createStream}
 
 
 /***/ }),
-/* 6 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Stream = __webpack_require__(1)
 var m = __webpack_require__(0)
-var config = __webpack_require__(4)
+var DietModel = __webpack_require__(3)
 
-var DietModel = {
-    diet : null,
-    newDiet : () => {
-        var d = {
-            plan : Stream(''),
-            monday : {
-                early : [],
-                break : [],
-                mid : [],
-                lunch : [],
-                even : [],
-                din : []
-            },
-            tuesday : {
-                early : [],
-                break : [],
-                mid : [],
-                lunch : [],
-                even : [],
-                din : []
-            },
-            wednesday : {
-                early : [],
-                break : [],
-                mid : [],
-                lunch : [],
-                even : [],
-                din : []
-            },
-            thursday : {
-                early : [],
-                break : [],
-                mid : [],
-                lunch : [],
-                even : [],
-                din : []
-            },
-            friday : {
-                early : [],
-                break : [],
-                mid : [],
-                lunch : [],
-                even : [],
-                din : []
-            },
-            saturday : {
-                early : [],
-                break : [],
-                mid : [],
-                lunch : [],
-                even : [],
-                din : []
-            },
-            sunday : {
-                early : [],
-                break : [],
-                mid : [],
-                lunch : [],
-                even : [],
-                din : []
-            },
-            exercise : [],
-            items : [],
-            dos : [],
-            dont : [],
-            veg : Stream(false),
-            dia : Stream(false)
+var DietComponent = {
+    oninit : (vnode) => {
+        if(m.route.param('id') === "new") {
+            //load the Diet as new
+            DietModel.newDiet()
         }
-
-        DietModel.diet = d
-    },
-    addFoodToWeek : (day, time) => {
-        var food = DietModel.newFood()
-        if(DietModel.diet) {
-            var daySelect;
-            switch(day) {
-                case "mon" : daySelect = DietModel.diet.monday;
-                             break
-                            
-                case "tue" : daySelect = DietModel.diet.tuesday
-                             break
-                            
-                case "wed" : daySelect = DietModel.diet.wednesday
-                             break
-                            
-                case "thu" : daySelect = DietModel.diet.thursday
-                             break
-                            
-                case "fri" : daySelect = DietModel.diet.friday
-                             break
-                            
-                case "sat" : daySelect = DietModel.diet.saturday
-                             break
-                            
-                case "sun" : daySelect = DietModel.diet.sunday
-                             break
-                default    : daySelect = null
-                             break
-            }
-
-            if(daySelect)
-                switch(time) {
-                    case "early" : 
-                                daySelect.early.push(food)
-                                break
-                                
-                    case "break" : 
-                                daySelect.break.push(food)
-                                break
-                                
-                    case "lunch" : 
-                                daySelect.lunch.push(food)
-                                break
-                                
-                    case "even" : 
-                                daySelect.even.push(food)
-                                break
-                                
-                    case "mid" : 
-                                daySelect.mid.push(food)
-                                break
-
-                    case "din" : 
-                                daySelect.din.push(food)
-                                break
-                    default    : 
-                                daySelect = null
-                                break
-                }
+        else {
+            //load the Diet as a new Diet
+            var id = m.route.param('id')
+            DietModel.loadDiet(id)
         }
     },
-    newFood : () => {
-        return {
-            item : Stream(''),
-            quantity : Stream(''),
-            protien : Stream(''),
-            calories : Stream('')
-        }
+    view : (vnode) => {
+        return (DietModel.diet) ? [m(".col-sm-10[id='content']", [
+                        m(".row", [
+                            m(".col-md-12", [
+                                m(".centerDiv", m("h1", "Add new Diet")),
+                                m("button.save", {
+                                    onclick : DietModel.save
+                                }, "Save Now"),
+                                m("input.planName[type='text'][placeholder='Diet Name']", {
+                                    oninput : m.withAttr('value', DietModel.diet.plan),
+                                    value : DietModel.diet.plan()
+                                }),
+                                m("label.checker",
+                                    m("input[type='checkbox']", {
+                                        checked : DietModel.diet.veg(),
+                                        onclick : m.withAttr('checked', DietModel.diet.veg)
+                                    }), "Vegetarian"
+                                ),
+                                m("label.checker",
+                                    m("input[type='checkbox']", {
+                                        checked : DietModel.diet.dia(),
+                                        onclick : m.withAttr('checked', DietModel.diet.dia)
+                                    }), "For Diabetic"
+                                ),
+                                m(".tabs", [
+                                    m("ul.nav.nav-pills", [
+                                        m("li.active", [m("a[data-toggle='tab'][href='#mon']", "Monday")]),
+                                        m("li[class='']", [m("a[data-toggle='tab'][href='#tue']", "Tuesday")]),
+                                        m("li[class='']", [m("a[data-toggle='tab'][href='#wed']", "Wednesday")]),
+                                        m("li[class='']", [m("a[data-toggle='tab'][href='#thu']", "Thursday")]),
+                                        m("li[class='']", [m("a[data-toggle='tab'][href='#fri']", "Friday")]),
+                                        m("li[class='']", [m("a[data-toggle='tab'][href='#sat']", "Saturday")]),
+                                        m("li[class='']", [m("a[data-toggle='tab'][href='#sun']", "Sunday")])
+                                    ]),
+                                    m(".tab-content", [
+                                        DietComponent.tabWeekDay("mon", DietModel.diet.monday, true),
+                                        DietComponent.tabWeekDay("tue", DietModel.diet.tuesday),
+                                        DietComponent.tabWeekDay("wed", DietModel.diet.wednesday),
+                                        DietComponent.tabWeekDay("thu", DietModel.diet.thursday),
+                                        DietComponent.tabWeekDay("fri", DietModel.diet.friday),
+                                        DietComponent.tabWeekDay("sat", DietModel.diet.saturday),
+                                        DietComponent.tabWeekDay("sun", DietModel.diet.sunday)
+                                    ])
+                                ])
+                        ])
+                ])
+        ])] : [m(".col-sm-10[id='content']", m(".loading"))]
     },
-    addExercise : (str) => {
-        if(DietModel.diet) {
-            DietModel.diet.exercise.push(Stream(''))
-        }
+    tabWeekDay : (tabId, model, active) => {
+        if (active) classes = ".tab-pane.fade.active.in"
+        else classes = ".tab-pane.fade"
+
+        return [m("" + classes,{id : tabId}, [
+                    m(".tabs", [
+                        m("ul.nav.nav-pills", [
+                            m("li.active", [m("a[data-toggle='tab'][href='#early"+ tabId +"']", "Early Morning")]),
+                            m("li[class='']", [m("a[data-toggle='tab'][href='#break"+ tabId +"']", "Breakfast")]),
+                            m("li[class='']", [m("a[data-toggle='tab'][href='#lunch"+ tabId +"']", "Lunch")]),
+                            m("li[class='']", [m("a[data-toggle='tab'][href='#even"+ tabId +"']", "Evening")]),
+                            m("li[class='']", [m("a[data-toggle='tab'][href='#din"+ tabId +"']", "Dinner")])
+                        ]),
+                        m(".tab-content", [
+                            DietComponent.tabTime("early" + tabId, model.early, true),
+                            DietComponent.tabTime("break" + tabId, model.break),
+                            DietComponent.tabTime("lunch" + tabId, model.lunch),
+                            DietComponent.tabTime("even" + tabId, model.even),
+                            DietComponent.tabTime("din" + tabId, model.din)
+                        ])
+                    ])
+                ])
+            ]
     },
-    save : () => {
-        m.request({
-            method : "POST",
-            data : DietModel.diet,
-            url : config.diets
-        }).then(
-            (response) => {
-                console.log(response)
-            },
-            (error) => {
-                console.log(error)
-            }
-        )
-    }
+    tabTime : (tabId, model, active) => {
+        if(active) classes = ".tab-pane.fade.active.in"
+        else classes = ".tab-pane.fade"
+        return              m("" + classes, {id: tabId}, [
+                                m("button.new", {onclick : DietComponent.pusher(model)}, "+ Add new"),
+                                m(".food-head", [
+                                    m(".col-xs-3", "Menu Item"),
+                                    m(".col-xs-3", "Quantity"),
+                                    m(".col-xs-3", "Calories"),
+                                    m(".col-xs-3", "Protien")
+                                ]),
+                                model.map((food) => {
+                                    return m(".food-in", [
+                                        m(".col-xs-3", [
+                                            m("input[placeholder='Menu Item'][type='text']", {
+                                                value : food.item(),
+                                                oninput : m.withAttr('value', food.item)
+                                            })
+                                        ]),
+                                        m(".col-xs-3", [
+                                            m("input[placeholder='Quantity'][type='text']", {
+                                                value : food.quantity(),
+                                                oninput : m.withAttr('value', food.quantity)
+                                            })
+                                        ]),
+                                        m(".col-xs-3", [
+                                            m("input[placeholder='Calories'][type='text']", {
+                                                value : food.calories(),
+                                                oninput : m.withAttr('value', food.calories)
+                                            })
+                                        ]),
+                                        m(".col-xs-3", [
+                                            m("input[placeholder='Protien'][type='text']", {
+                                                value : food.protien(),
+                                                oninput : m.withAttr('value', food.protien)
+                                            })
+                                        ])
+                                    ])
+                                })
+                            ])
+    },
+    pusher : (model) => {
+        return () => {
+            model.push(DietModel.newFood())
+        }
+    } 
 }
 
-module.exports = DietModel
+module.exports = DietComponent
 
 /***/ }),
-/* 7 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var m = __webpack_require__(0)
-var NavComponent = __webpack_require__(3)
+var NavComponent = __webpack_require__(5)
 
-m.route(document.body, "/home", {
-    "/home" : {
+m.route(document.body, "/diet/new", {
+    "/diet/:id" : {
         render : (vnode) => {
             return m(NavComponent, vnode.attrs)
         }
@@ -1850,7 +1924,7 @@ m.route(document.body, "/home", {
 })
 
 /***/ }),
-/* 8 */
+/* 10 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -2036,7 +2110,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 9 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -2226,10 +2300,10 @@ process.umask = function() { return 0; };
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(8)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(10)))
 
 /***/ }),
-/* 10 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var apply = Function.prototype.apply;
@@ -2282,7 +2356,7 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(9);
+__webpack_require__(11);
 exports.setImmediate = setImmediate;
 exports.clearImmediate = clearImmediate;
 

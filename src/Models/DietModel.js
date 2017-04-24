@@ -1,16 +1,17 @@
 var Stream = require('mithril/stream')
 var m = require('mithril')
 var config = require("../../config")
+var Toast = require('../Components/Toast')
 
 var DietModel = {
     diet : null,
+    loading : true,
     newDiet : () => {
         var d = {
             plan : Stream(''),
             monday : {
                 early : [],
                 break : [],
-                mid : [],
                 lunch : [],
                 even : [],
                 din : []
@@ -18,7 +19,6 @@ var DietModel = {
             tuesday : {
                 early : [],
                 break : [],
-                mid : [],
                 lunch : [],
                 even : [],
                 din : []
@@ -26,7 +26,6 @@ var DietModel = {
             wednesday : {
                 early : [],
                 break : [],
-                mid : [],
                 lunch : [],
                 even : [],
                 din : []
@@ -34,7 +33,6 @@ var DietModel = {
             thursday : {
                 early : [],
                 break : [],
-                mid : [],
                 lunch : [],
                 even : [],
                 din : []
@@ -42,7 +40,6 @@ var DietModel = {
             friday : {
                 early : [],
                 break : [],
-                mid : [],
                 lunch : [],
                 even : [],
                 din : []
@@ -50,7 +47,6 @@ var DietModel = {
             saturday : {
                 early : [],
                 break : [],
-                mid : [],
                 lunch : [],
                 even : [],
                 din : []
@@ -58,7 +54,6 @@ var DietModel = {
             sunday : {
                 early : [],
                 break : [],
-                mid : [],
                 lunch : [],
                 even : [],
                 din : []
@@ -72,6 +67,7 @@ var DietModel = {
         }
 
         DietModel.diet = d
+        DietModel.loading = false
     },
     addFoodToWeek : (day, time) => {
         var food = DietModel.newFood()
@@ -147,16 +143,50 @@ var DietModel = {
         }
     },
     save : () => {
+        DietModel.loading = true
         m.request({
             method : "POST",
             data : DietModel.diet,
             url : config.diets
         }).then(
             (response) => {
-                console.log(response)
+                if(response === null) {
+                    Toast.showToast("Unable to save, please try again.")
+                }
+                else {
+                    console.log(response)
+                    Toast.showToast("Diet saved successfully.")
+                }
+
+                DietModel.loading = false
             },
             (error) => {
-                console.log(error)
+                    Toast.showToast("Network Error, please try again.")
+                    DietModel.loading = false
+            }
+        )
+    },
+    loadDiet : (id) => {
+        DietModel.loading = true
+
+        m.request({
+            method : "GET",
+            url : config.diets + id
+        }).then(
+            (response) => {
+                if(response === null) {
+                    Toast.showToast("Failed To load the diet, please reload.")
+                }
+                else {
+                    DietModel.diet = response
+                    console.log(response)
+                    Toast.showToast("Loaded the diet")
+                }
+                DietModel.loading = false
+            },
+            (error) => {
+                Toast.showToast("Failed To load the diet, please reload.")
+                DietModel.loading = false
             }
         )
     }

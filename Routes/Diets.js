@@ -19,9 +19,43 @@ router.post("/", (req, res, next) => {
     })
 })
 
-
 router.get("/:Id", (req, res, next) => {
-    dietId = req.params('Id')
+    var dietId = req.params.Id
+    Diet.findById(dietId, (err, d) => {
+        if(err) {
+            console.log(err)
+            res.json(null)
+            next()
+        }
+        else {
+            return res.json(d)
+        }
+    })
+})
+
+router.get("/", (req,res) => {
+    Diet.find({}, (err, res) => {
+        if(err) {
+            console.log(err)
+            res.json([])
+        }
+        else {
+            res.json(res)
+        }
+    })
+})
+
+router.delete("/:id", (req, res) => {
+    var id = req.params.id
+    Diet.findByIdAndRemove(id, (err, res) => {
+        if(err) {
+            console.log(err)
+            res.json(false)
+        }
+        else {
+            res.json(true)
+        }
+    })
 })
 
 module.exports = router
