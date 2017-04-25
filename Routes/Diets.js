@@ -7,7 +7,7 @@ var Diet = require("../Models/Diet")
  * Route : v1/Diets
  */
 
-router.get("mobile/unique/:Id", (req, res, next) => {
+router.get("/mobile/:Id", (req, res, next) => {
     var dietId = req.params.Id
     Diet.findById(dietId, (err, d) => {
         if(err) {
