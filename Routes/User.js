@@ -31,31 +31,31 @@ router.post('/', (req, res, next) => {
         else {
             res.json(result).end()
             found = true
-        }
-    })
+            
+            if(!found) {
+                var user = new User()
+                
+                user.name = name
+                user.mobile = mobile
+                user.bmi = bmi
+                user.diabetes = diabetes
+                user.veg = veg
 
-    if(!found) {
-        var user = new User()
-        
-        user.name = name
-        user.mobile = mobile
-        user.bmi = bmi
-        user.diabetes = diabetes
-        user.veg = veg
-
-        user.save((err) => {
-            console.log(err)
-            if(err) res.json(false)
-            else{
-                User.findOne({mobile : mobile}, (err, result) => {
-                    if(result === null) found = true
-                    else {
-                        res.json(result).end()
+                user.save((err) => {
+                    console.log(err)
+                    if(err) res.json(false)
+                    else{
+                        User.findOne({mobile : mobile}, (err, result) => {
+                            if(result === null) found = true
+                            else {
+                                res.json(result).end()
+                            }
+                        })
                     }
                 })
             }
-        })
-    }
+        }
+    })
 })
 
 module.exports = router;
