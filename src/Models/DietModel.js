@@ -158,6 +158,7 @@ var DietModel = {
                     else {
                         console.log(response)
                         Toast.showToast("Diet saved successfully.")
+                        m.route.set("/diet/all")
                     }
 
                     DietModel.loading = false
@@ -182,6 +183,7 @@ var DietModel = {
                     else {
                         console.log(response)
                         Toast.showToast("Diet saved successfully.")
+                        m.route.set("/diet/all")
                     }
 
                     DietModel.loading = false
