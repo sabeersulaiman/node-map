@@ -21,7 +21,7 @@ router.get("/:veg/:dia", (req,res) => {
         else {
             var set = result.map((d) => {
                 return {
-                    _id : d,_id,
+                    _id : d._id,
                     plan : d.plan,
                     date : d.createdAt,
                     user : "Admin"
