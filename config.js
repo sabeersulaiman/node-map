@@ -1,4 +1,4 @@
-var APIBaseUrl = "http://localhost:3001/v1/"
+var APIBaseUrl = "http://map.ssabeer.com/v1/"
 var url = {
     diets : APIBaseUrl + "diets/"
 }

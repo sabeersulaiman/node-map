@@ -6,6 +6,7 @@ var Toast = require('../Components/Toast')
 var DietModel = {
     diet : null,
     loading : true,
+    diets : [],
     newDiet : () => {
         var d = {
             plan : Stream(''),
@@ -286,6 +287,23 @@ var DietModel = {
             protien : Stream(en.protien),
             calories : Stream(en.calories)
         }
+    },
+    loadAll : () => {
+        DietModel.loading = true
+
+        m.request({
+            method : "GET",
+            url : config.diets
+        }).then(
+            (response) => {
+                DietModel.diets = response
+                DietModel.loading = false
+            },
+            (error) => {
+                console.log(error)
+                DietModel.loading = false
+            }
+        )
     }
 }
 

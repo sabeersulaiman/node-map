@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 9);
+/******/ 	return __webpack_require__(__webpack_require__.s = 10);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1297,48 +1297,21 @@ m.vnode = Vnode
 if (true) module["exports"] = m
 else window.m = m
 }());
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12).setImmediate, __webpack_require__(4)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13).setImmediate, __webpack_require__(4)))
 
 /***/ }),
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-
-module.exports = __webpack_require__(7)
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var m = __webpack_require__(0);
-
-var Toast = {
-    toastVal : '',
-    showToast : function (message) {
-        var sbar = document.getElementById('snackbar');
-        Toast.toastVal = message;
-        sbar.className = "show";
-        setTimeout(function(){ sbar.className = sbar.className.replace("show", ""); }, 3000);
-    }
-};
-
-module.exports = Toast;
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Stream = __webpack_require__(1)
+var Stream = __webpack_require__(2)
 var m = __webpack_require__(0)
 var config = __webpack_require__(6)
-var Toast = __webpack_require__(2)
+var Toast = __webpack_require__(3)
 
 var DietModel = {
     diet : null,
     loading : true,
+    diets : [],
     newDiet : () => {
         var d = {
             plan : Stream(''),
@@ -1619,10 +1592,55 @@ var DietModel = {
             protien : Stream(en.protien),
             calories : Stream(en.calories)
         }
+    },
+    loadAll : () => {
+        DietModel.loading = true
+
+        m.request({
+            method : "GET",
+            url : config.diets
+        }).then(
+            (response) => {
+                DietModel.diets = response
+                DietModel.loading = false
+            },
+            (error) => {
+                console.log(error)
+                DietModel.loading = false
+            }
+        )
     }
 }
 
 module.exports = DietModel
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = __webpack_require__(7)
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var m = __webpack_require__(0);
+
+var Toast = {
+    toastVal : '',
+    showToast : function (message) {
+        var sbar = document.getElementById('snackbar');
+        Toast.toastVal = message;
+        sbar.className = "show";
+        setTimeout(function(){ sbar.className = sbar.className.replace("show", ""); }, 3000);
+    }
+};
+
+module.exports = Toast;
 
 /***/ }),
 /* 4 */
@@ -1656,10 +1674,11 @@ module.exports = g;
 /***/ (function(module, exports, __webpack_require__) {
 
 var m = __webpack_require__(0)
-var Stream = __webpack_require__(1)
-var DietModel = __webpack_require__(3)
+var Stream = __webpack_require__(2)
+var DietModel = __webpack_require__(1)
 var DietComponent = __webpack_require__(8)
-var Toast = __webpack_require__(2)
+var Toast = __webpack_require__(3)
+var DietList = __webpack_require__(9)
 
 var NavComponent = {
     oninit : (vnode) => {
@@ -1676,10 +1695,13 @@ var NavComponent = {
                 m(".row", [
                     m(".col-sm-2[id='menu']", [
                         m("ul.menu-high", [
-                            m("li", [m("a[href='#diets']", "Diets")])
+                            m("li", [m("a",{
+                                href : "/diet/all",
+                                oncreate : m.route.link
+                            }, "Diets")])
                         ])
                     ]),
-                    m(DietComponent)
+                    (m.route.param('id') !== 'all') ? m(DietComponent) : m(DietList)
                 ])
             ])
         ]
@@ -1692,7 +1714,7 @@ module.exports = NavComponent
 /* 6 */
 /***/ (function(module, exports) {
 
-var APIBaseUrl = "http://localhost:3001/v1/"
+var APIBaseUrl = "http://map.ssabeer.com/v1/"
 var url = {
     diets : APIBaseUrl + "diets/"
 }
@@ -1869,7 +1891,7 @@ else window.m = {stream : createStream}
 /***/ (function(module, exports, __webpack_require__) {
 
 var m = __webpack_require__(0)
-var DietModel = __webpack_require__(3)
+var DietModel = __webpack_require__(1)
 
 var DietComponent = {
     oninit : (vnode) => {
@@ -2010,9 +2032,35 @@ module.exports = DietComponent
 /***/ (function(module, exports, __webpack_require__) {
 
 var m = __webpack_require__(0)
+var DietModel = __webpack_require__(1)
+
+var DietList = {
+    oninit : (vnode) => {
+        DietModel.loadAll()
+    },
+    view : (vnode) => {
+        return (DietModel.loading) ? [m(".col-sm-10[id='content']", m(".loading"))]
+        : m(".col-sm-10[id='content']",
+            m("ul", DietModel.diets.map((d) =>{
+                return m("li", m("a", {
+                    href : "/diet/" + d._id,
+                    oncreate : m.route.link
+                }, d.plan))
+            }))
+        )
+    }
+}
+
+module.exports = DietList
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var m = __webpack_require__(0)
 var NavComponent = __webpack_require__(5)
 
-m.route(document.body, "/diet/new", {
+m.route(document.body, "/diet/all", {
     "/diet/:id" : {
         render : (vnode) => {
             return m(NavComponent, vnode.attrs)
@@ -2021,7 +2069,7 @@ m.route(document.body, "/diet/new", {
 })
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -2207,7 +2255,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -2397,10 +2445,10 @@ process.umask = function() { return 0; };
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(10)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(11)))
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var apply = Function.prototype.apply;
@@ -2453,7 +2501,7 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(11);
+__webpack_require__(12);
 exports.setImmediate = setImmediate;
 exports.clearImmediate = clearImmediate;
 

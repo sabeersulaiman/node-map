@@ -34,13 +34,13 @@ router.get("/:Id", (req, res, next) => {
 })
 
 router.get("/", (req,res) => {
-    Diet.find({}, (err, res) => {
+    Diet.find({}, (err, result) => {
         if(err) {
             console.log(err)
             res.json([])
         }
         else {
-            res.json(res)
+            res.json(result)
         }
     })
 })

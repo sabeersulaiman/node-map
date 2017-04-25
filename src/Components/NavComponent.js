@@ -3,6 +3,7 @@ var Stream = require('mithril/stream')
 var DietModel = require('../Models/DietModel')
 var DietComponent = require('../Components/DietComponent')
 var Toast = require('../Components/Toast')
+var DietList = require('../Components/DietList')
 
 var NavComponent = {
     oninit : (vnode) => {
@@ -19,10 +20,13 @@ var NavComponent = {
                 m(".row", [
                     m(".col-sm-2[id='menu']", [
                         m("ul.menu-high", [
-                            m("li", [m("a[href='#diets']", "Diets")])
+                            m("li", [m("a",{
+                                href : "/diet/all",
+                                oncreate : m.route.link
+                            }, "Diets")])
                         ])
                     ]),
-                    m(DietComponent)
+                    (m.route.param('id') !== 'all') ? m(DietComponent) : m(DietList)
                 ])
             ])
         ]
