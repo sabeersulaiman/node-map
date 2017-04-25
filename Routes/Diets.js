@@ -7,6 +7,30 @@ var Diet = require("../Models/Diet")
  * Route : v1/Diets
  */
 
+router.get("/:veg/:dia", (req,res) => {
+    var veg = (req.params.veg === "true") ? true : false
+    var dia = (req.params.dia === "true") ? true : false
+    Diet.find({
+        veg : veg,
+        dia : dia
+    }, (err, result) => {
+        if(err) {
+            console.log(err)
+            res.json([])
+        }
+        else {
+            var set = result.map((d) => {
+                return {
+                    plan : d.plan,
+                    date : d.createdAt,
+                    user : "Admin"
+                }
+            })
+            res.json(set)
+        }
+    })
+})
+
 //add to the db
 router.put("/", (req, res, next) => {
     var diet = new Diet(req.body)

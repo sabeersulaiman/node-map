@@ -53,6 +53,10 @@ var EventSchema = new mongoose.Schema({
         sunday: {
             type : Schema.Types.Mixed,
             required : true
+        },
+        createdAt: {
+            type : Date,
+            default : Date.now
         }
     },
     {collection : 'diets'}
