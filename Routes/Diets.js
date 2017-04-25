@@ -71,6 +71,8 @@ router.get("mobile/:Id", (req, res, next) => {
                 plan : d.plan,
                 monday : d.monday
             }
+
+            console.log(n)
             return res.json(n)
         }
     })
