@@ -91,7 +91,7 @@ button.new {
     padding: 0 50px;
 }
 
-button.save {
+button.save, a.save {
     background: green;
     border: none;
     color: #fff;
