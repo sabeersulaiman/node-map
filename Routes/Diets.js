@@ -8,7 +8,7 @@ var Diet = require("../Models/Diet")
  */
 
 //add to the db
-router.post("/", (req, res, next) => {
+router.put("/", (req, res, next) => {
     var diet = new Diet(req.body)
     diet.save((err, d) => {
         if(err) {
@@ -54,6 +54,37 @@ router.delete("/:id", (req, res) => {
         }
         else {
             res.json(true)
+        }
+    })
+})
+
+router.post("/:Id", (req, res, next) => {
+    var dietId = req.params.Id
+    var di = req.body
+
+    Diet.findById(dietId, (err, d) => {
+        if(err) {
+            console.log(err)
+            res.json(false)
+            next()
+        }
+        else {
+            d.plan = di.plan
+            d.monday = di.monday
+            d.tuesday = di.tuesday
+            d.wednesday = di.wednesday
+            d.thursday = di.thursday
+            d.friday = di.friday
+            d.saturday = di.saturday
+            d.sunday = di.sunday
+            d.veg = di.veg
+            d.dia = di.dia
+
+            d.save((err, doc) => {
+                console.log(err)
+                if(err) res.json(false)
+                else res.json(true)
+            })
         }
     })
 })

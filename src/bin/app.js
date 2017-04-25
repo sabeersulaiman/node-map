@@ -1476,28 +1476,54 @@ var DietModel = {
         }
     },
     save : () => {
-        DietModel.loading = true
-        m.request({
-            method : "POST",
-            data : DietModel.diet,
-            url : config.diets
-        }).then(
-            (response) => {
-                if(response === null) {
-                    Toast.showToast("Unable to save, please try again.")
-                }
-                else {
-                    console.log(response)
-                    Toast.showToast("Diet saved successfully.")
-                }
+        if(!DietModel.diet._id) {
+            DietModel.loading = true
+            m.request({
+                method : "PUT",
+                data : DietModel.diet,
+                url : config.diets
+            }).then(
+                (response) => {
+                    if(response === null) {
+                        Toast.showToast("Unable to save, please try again.")
+                    }
+                    else {
+                        console.log(response)
+                        Toast.showToast("Diet saved successfully.")
+                    }
 
-                DietModel.loading = false
-            },
-            (error) => {
-                    Toast.showToast("Network Error, please try again.")
                     DietModel.loading = false
-            }
-        )
+                },
+                (error) => {
+                        Toast.showToast("Network Error, please try again.")
+                        DietModel.loading = false
+                }
+            )
+        }
+        else {
+            DietModel.loading = true
+            m.request({
+                method : "POST",
+                data : DietModel.diet,
+                url : config.diets + DietModel.diet._id
+            }).then(
+                (response) => {
+                    if(response === false) {
+                        Toast.showToast("Unable to save, please try again.")
+                    }
+                    else {
+                        console.log(response)
+                        Toast.showToast("Diet saved successfully.")
+                    }
+
+                    DietModel.loading = false
+                },
+                (error) => {
+                        Toast.showToast("Network Error, please try again.")
+                        DietModel.loading = false
+                }
+            )
+        }
     },
     loadDiet : (id) => {
         DietModel.loading = true
@@ -1511,8 +1537,71 @@ var DietModel = {
                     Toast.showToast("Failed To load the diet, please reload.")
                 }
                 else {
-                    DietModel.diet = response
-                    console.log(response)
+                    var d = response
+                    var mapper = DietModel.mapper
+
+                    var diet = {
+                        plan : Stream(d.plan),
+                        monday : {
+                            early : d.monday.early.map(mapper),
+                            break : d.monday.break.map(mapper),
+                            lunch : d.monday.lunch.map(mapper),
+                            even : d.monday.even.map(mapper),
+                            din : d.monday.din.map(mapper)
+                        },
+                        tuesday : {
+                            early : d.tuesday.early.map(mapper),
+                            break : d.tuesday.break.map(mapper),
+                            lunch : d.tuesday.lunch.map(mapper),
+                            even : d.tuesday.even.map(mapper),
+                            din : d.tuesday.din.map(mapper)
+                        },
+                        wednesday : {
+                            early : d.wednesday.early.map(mapper),
+                            break : d.wednesday.break.map(mapper),
+                            lunch : d.wednesday.lunch.map(mapper),
+                            even : d.wednesday.even.map(mapper),
+                            din : d.wednesday.din.map(mapper)
+                        },
+                        thursday : {
+                            early : d.thursday.early.map(mapper),
+                            break : d.thursday.break.map(mapper),
+                            lunch : d.thursday.lunch.map(mapper),
+                            even : d.thursday.even.map(mapper),
+                            din : d.thursday.din.map(mapper)
+                        },
+                        friday : {
+                            early : d.friday.early.map(mapper),
+                            break : d.friday.break.map(mapper),
+                            lunch : d.friday.lunch.map(mapper),
+                            even : d.friday.even.map(mapper),
+                            din : d.friday.din.map(mapper)
+                        },
+                        saturday : {
+                            early : d.saturday.early.map(mapper),
+                            break : d.saturday.break.map(mapper),
+                            lunch : d.saturday.lunch.map(mapper),
+                            even : d.saturday.even.map(mapper),
+                            din : d.saturday.din.map(mapper)
+                        },
+                        sunday : {
+                            early : d.sunday.early.map(mapper),
+                            break : d.sunday.break.map(mapper),
+                            lunch : d.sunday.lunch.map(mapper),
+                            even : d.sunday.even.map(mapper),
+                            din : d.sunday.din.map(mapper)
+                        },
+                        exercise : [],
+                        items : [],
+                        dos : [],
+                        dont : [],
+                        veg : Stream(d.veg),
+                        dia : Stream(d.dia),
+                        _id : d._id
+                    }
+
+                    DietModel.diet = diet
+
                     Toast.showToast("Loaded the diet")
                 }
                 DietModel.loading = false
@@ -1522,6 +1611,14 @@ var DietModel = {
                 DietModel.loading = false
             }
         )
+    },
+    mapper : (en) => {
+        return {
+            item : Stream(en.item),
+            quantity : Stream(en.quantity),
+            protien : Stream(en.protien),
+            calories : Stream(en.calories)
+        }
     }
 }
 
