@@ -58,6 +58,24 @@ router.get("/:Id", (req, res, next) => {
     })
 })
 
+router.get("mobile/:Id", (req, res, next) => {
+    var dietId = req.params.Id
+    Diet.findById(dietId, (err, d) => {
+        if(err) {
+            console.log(err)
+            res.json(null)
+            next()
+        }
+        else {
+            var n = {
+                plan : d.plan,
+                monday : d.monday
+            }
+            return res.json(n)
+        }
+    })
+})
+
 router.get("/", (req,res) => {
     Diet.find({}, (err, result) => {
         if(err) {
