@@ -7,6 +7,26 @@ var Diet = require("../Models/Diet")
  * Route : v1/Diets
  */
 
+router.get("mobile/:Id", (req, res, next) => {
+    var dietId = req.params.Id
+    Diet.findById(dietId, (err, d) => {
+        if(err) {
+            console.log(err)
+            res.json(null)
+            next()
+        }
+        else {
+            var n = {
+                plan : d.plan,
+                monday : d.monday
+            }
+
+            console.log(n)
+            return res.json(n)
+        }
+    })
+})
+
 router.get("/:veg/:dia", (req,res) => {
     var veg = (req.params.veg === "true") ? true : false
     var dia = (req.params.dia === "true") ? true : false
@@ -54,26 +74,6 @@ router.get("/:Id", (req, res, next) => {
         }
         else {
             return res.json(d)
-        }
-    })
-})
-
-router.get("mobile/:Id", (req, res, next) => {
-    var dietId = req.params.Id
-    Diet.findById(dietId, (err, d) => {
-        if(err) {
-            console.log(err)
-            res.json(null)
-            next()
-        }
-        else {
-            var n = {
-                plan : d.plan,
-                monday : d.monday
-            }
-
-            console.log(n)
-            return res.json(n)
         }
     })
 })
