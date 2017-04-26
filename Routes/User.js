@@ -27,12 +27,11 @@ router.post('/', (req, res, next) => {
     var found = false
 
     User.findOne({mobile : mobile}, (err, result) => {
-        if(result === null) found = false
-        else {
-            res.json(result).end()
-            found = true
-            
-            if(!found) {
+        if(err) {
+            res.json(null)
+            return
+        }
+        if(result === null){
                 var user = new User()
                 
                 user.name = name
@@ -43,17 +42,21 @@ router.post('/', (req, res, next) => {
 
                 user.save((err) => {
                     console.log(err)
-                    if(err) res.json(false)
+                    if(err) res.json(null)
                     else{
                         User.findOne({mobile : mobile}, (err, result) => {
-                            if(result === null) found = true
+                            if(result === null) {
+                                res.json(null)
+                            }
                             else {
-                                res.json(result).end()
+                                res.json(result)
                             }
                         })
                     }
                 })
-            }
+        }
+        else {
+            res.json(result).end()
         }
     })
 })
