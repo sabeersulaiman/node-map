@@ -17,6 +17,16 @@ db.once('open', () => {
 var app = express()
 app.use(express.static('src'))
 
+app.get("loaderio-679668c5470e08fc608f34051d56cd16", (req, res) => {
+    res.sendFile("./src/loaderio-1e87620af21a233698ed90daf3d4e14a");
+})
+app.get("loaderio-679668c5470e08fc608f34051d56cd16.html", (req, res) => {
+    res.sendFile("./src/loaderio-1e87620af21a233698ed90daf3d4e14a");
+})
+app.get("loaderio-679668c5470e08fc608f34051d56cd16.txt", (req, res) => {
+    res.sendFile("./src/loaderio-1e87620af21a233698ed90daf3d4e14a");
+})
+
 
 function defaultContentTypeMiddleware (req, res, next) {
   req.headers['content-type'] = 'application/json';
